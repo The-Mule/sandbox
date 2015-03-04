@@ -2,11 +2,13 @@ package euler
 
 var primes []int = make([]int, 0)
 
-const max int = 1000000
+const max int = 10000000
 
-const MAX_DIGITS = 10
+const MAX_DIGITS = 20
 
 func PrimalityTest(n int) bool {
+	if n <= 3 { return n >= 2 }
+	if n % 2 == 0 || n % 3 == 0 { return false }
 	for _, p := range primes { if n > p && n % p == 0 { return false } }
 	for i := 5; i*i <= n; i += 6 {
 		if n % i == 0 || n % (i+2) == 0 { return false }
@@ -53,5 +55,9 @@ func Rotate(s []byte, l int) []byte {
 }
 
 func Palindromic(n []byte) bool {
-	
+	size := len(n)
+	for i := 0; i < int(size / 2); i++ {
+		if n[i] != n[size - 1 - i] { return false }
+	}
+	return true
 }

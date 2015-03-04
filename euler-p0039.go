@@ -1,39 +1,53 @@
 package main
 
-import (
-	"fmt"
-//	"sandbox/euler"
-)
+import "fmt"
 
-const p int = 121
+const p int = 1001
 
-type triple struct {
-	m int
-	n int
+type Triple struct {
 	a int
 	b int
-	c int
+	c int	
+}
+
+type Triples []Triple
+
+func (t *Triple) normalize() {
+	if t.a > t.b { t.a, t.b = t.b, t.a }
+	if t.a > t.c { t.a, t.c = t.c, t.a }
+	if t.b > t.c { t.b, t.c = t.c, t.b }
+}
+
+func (ts *Triples) contains(t Triple) bool {
+	for _, x := range *ts {
+		if t.a == x.a && t.b == x.b && t.b == x.b { return true } 
+	}
+	return false
 }
 
 func main() {
 		
 	var sums [p]int
-	var triples [p]([]triple)
+	var triples [p]Triples
 	
-	for i := 0; i < p; i++ { triples[i] = make([]triple, 0) }
+	for i := 0; i < p; i++ { triples[i] = make(Triples, 0) }
 
+	max := 0
 	for n := 1; n < p/2; n++ {
 		for m := n + 1; 2*m*(m+n) <= p; m++ {
 			for k := 1; ; k++ {
 				sum := k*2*m*(m+n)
-				//fmt.Printf("%d %d = %d\n", n, m, sum)
 				if sum > p { break }
-				sums[sum]++
-				triples[sum] = append(triples[sum], 
-					triple{m, n, k*((m*m)-(n*n)),k*2*m*n,k*((m*m)+(n*n))})
+				t := Triple{k*((m*m)-(n*n)),k*2*m*n,k*((m*m)+(n*n))}
+				t.normalize()
+				if !triples[sum].contains(t) {
+					sums[sum]++
+					triples[sum] = append(triples[sum], t)
+					if sums[sum] > sums[max] { max = sum }
+				}
 			}
 		}
 	}
-	fmt.Printf("%d\n", sums[120]);
-	for _, t := range triples[120] { fmt.Printf("[%d %d] %d %d %d\n", t.m, t.n, t.a, t.b, t.c) }
+	for _, t := range triples[max] { fmt.Printf("%d %d %d\n", t.a, t.b, t.c) }
+	fmt.Printf("%d (%d)\n", sums[max], max)
 }

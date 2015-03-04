@@ -6,5 +6,14 @@ import (
 )
 
 func main() {
-	fmt.Printf("%d", euler.Number([]byte{1,0,0,1,0,0,1,0,0,1},2 ))
+
+	sum := 0
+	for i := 0; i < 1000000; i++ {
+		slice := euler.Slice(i, 2)
+		if euler.Palindromic(slice) {		
+			slice = euler.Slice(i, 10)			
+			if euler.Palindromic(slice) { sum += i }
+		}
+	}
+	fmt.Printf("%d\n", sum)
 }
